@@ -63,10 +63,13 @@ function PersonDetails() {
             </div>
             <div style={{display:"flex"}}>
                 <div style={{margin:"20px 10px 10px"}}>
-                    <Link to="/" className="btn btn-primary float-right">Back</Link>
+                    <Link to="/" className="btn btn-primary">Back</Link>
                 </div>
                 <div style={{margin:"20px 10px 10px"}}>
-                    <button type="submit" className="btn btn-success float-right">Save</button>
+                    <button type="submit" className="btn btn-danger">Delete</button>
+                </div>
+                <div style={{margin:"20px 10px 10px"}}>
+                    <button type="submit" className="btn btn-success">Save</button>
                 </div>
             </div>
             
