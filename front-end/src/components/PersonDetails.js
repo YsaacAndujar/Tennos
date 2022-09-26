@@ -4,7 +4,9 @@ import {
 } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 const api = require('./API.js')
-
+function sendAlert(errors) {
+    alert(errors);
+}
 function PersonDetails() {
     const {id} = useParams();
     const [person, setPerson] = useState({
@@ -22,13 +24,27 @@ function PersonDetails() {
     }
     const save = (event)=>{
         event.preventDefault();
-        console.log(person);
         api.putPerson(person).then(result=>{
-            console.log(result);
-            if((result["statusCode"] == null && result["status"] == null) || (result["statusCode"] === 200 && result["status"] === 200)){
+            if((result["statusCode"] == null && result["status"] == null) || (result["statusCode"] === 200 || result["status"] === 200)){
                 setPerson(result);
-                
+                alert("Person updated successfully");
+                return
             }
+            sendAlert(result["errors"]["email"]);
+        }).catch(error => console.log(error));
+    }
+    const deletePerson = (event)=>{
+        if (!window.confirm("Are you sure that you want to delte this person?")){
+            return;
+        }
+        api.deletePerson(person).then(result=>{
+            console.log(result);
+            if((result["statusCode"] == null && result["status"] == null) || (result["statusCode"] === 200 || result["status"] === 200)){
+                alert("Person deleted successfully");
+                window.location.replace("/");
+                return
+            }
+            sendAlert("Ups, try it again");
         }).catch(error => console.log(error));
     }
     useEffect(() => {
@@ -44,17 +60,17 @@ function PersonDetails() {
             <div className="input-group input-group-default mb-3" style={{margin:"20px"}}>
                 <span className="input-group-text" id="inputGroup-sizing-default">First name</span>
                 <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={handleInputChange}
-                name="firstName" value={person["firstName"]}></input>
+                name="firstName" value={person["firstName"]||""} maxLength={50}></input>
             </div>
 
             <div className="input-group input-group-default mb-3" style={{margin:"20px"}}>
                 <span className="input-group-text" id="inputGroup-sizing-default">Last name</span>
-                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="lastName" onChange={handleInputChange} value={person["lastName"]}></input>
+                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="lastName" onChange={handleInputChange} value={person["lastName"]||""} maxLength={50}></input>
             </div>
 
             <div className="input-group input-group-default mb-3" style={{margin:"20px"}}>
                 <span className="input-group-text" id="inputGroup-sizing-default">Email name</span>
-                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="email"onChange={handleInputChange}value={person["email"]}></input>
+                <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="email"onChange={handleInputChange}value={person["email"]} maxLength={150}></input>
             </div>
 
             <div className="input-group input-group-default mb-3" style={{margin:"20px"}}>
@@ -66,7 +82,7 @@ function PersonDetails() {
                     <Link to="/" className="btn btn-primary">Back</Link>
                 </div>
                 <div style={{margin:"20px 10px 10px"}}>
-                    <button type="submit" className="btn btn-danger">Delete</button>
+                    <button type="button" className="btn btn-danger" onClick={deletePerson}>Delete</button>
                 </div>
                 <div style={{margin:"20px 10px 10px"}}>
                     <button type="submit" className="btn btn-success">Save</button>

@@ -18,3 +18,7 @@ export async function putPerson(person) {
     body: JSON.stringify(person),}).catch(error => console.log(error));
     return await response.json();
 }
+export async function deletePerson(person) {
+    const response = await fetch(url+"persons/"+person["id"],{method:"DELETE"}).catch(error => console.log(error));
+    return await response.json();
+}

@@ -76,7 +76,11 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public object Delete(int id)
         {
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            if (dll.Delete(id))
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
         }
     }
 }
