@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import PersonsList from './components/PersonsList';
 import PersonDetails from './components/PersonDetails';
+import PersonAdd from './components/PersonAdd';
 function App() {
     return(
         
@@ -21,6 +22,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<PersonsList/>} />
                     <Route path="/:id" element={<PersonDetails/>} />
+                    <Route path="/add" element={<PersonAdd/>} />
                 </Routes>
             </div>
         </Router>

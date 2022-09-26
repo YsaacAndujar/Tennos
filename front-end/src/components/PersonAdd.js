@@ -1,16 +1,13 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState} from 'react';
 import {
     Link
 } from 'react-router-dom';
-import { useParams } from "react-router-dom";
 const api = require('./API.js')
 function sendAlert(errors) {
     alert(errors);
 }
-function PersonDetails() {
-    const {id} = useParams();
+function PersonAdd() {
     const [person, setPerson] = useState({
-        "id":id,
         "firstName":"",
         "lastName":"",
         "email":"",
@@ -23,39 +20,29 @@ function PersonDetails() {
         });
     }
     const save = (event)=>{
+        event.preventDefault()
         if(person["birth"]==''){
             person["birth"]=null;
         }
-        event.preventDefault();
-        api.putPerson(person).then(result=>{
+        api.addPerson(person).then(result=>{
             if((result["statusCode"] == null && result["status"] == null) || (result["statusCode"] === 200 || result["status"] === 200)){
-                setPerson(result);
-                alert("Person updated successfully");
+                alert("Person added successfully");
+                setPerson({
+                    "firstName":"",
+                    "lastName":"",
+                    "email":"",
+                    "birth":""
+                });
                 return
             }
-            sendAlert(result["errors"]["email"]);
-        }).catch(error => console.log(error));
-    }
-    const deletePerson = (event)=>{
-        if (!window.confirm("Are you sure that you want to delte this person?")){
-            return;
-        }
-        api.deletePerson(person).then(result=>{
-            if((result["statusCode"] == null && result["status"] == null) || (result["statusCode"] === 200 || result["status"] === 200)){
-                alert("Person deleted successfully");
-                window.location.replace("/");
-                return
+            if(result["status"]==400){
+                sendAlert(result["errors"]["email"]);
+                return;
             }
-            sendAlert("Ups, try it again");
+            console.log(result);
+            sendAlert(result["errors"]["Email"]);
         }).catch(error => console.log(error));
     }
-    useEffect(() => {
-            api.getPerson(id).then(result=>{
-                if((result["statusCode"] == null && result["status"] == null) || (result["statusCode"] === 200 && result["status"] === 200)){
-                    setPerson(result);
-                }
-            }).catch(error => console.log(error));
-      }, [])
     
     return(
         <form onSubmit={save}>
@@ -86,15 +73,11 @@ function PersonDetails() {
                     <Link to="/" className="btn btn-primary">Back</Link>
                 </div>
                 <div style={{margin:"20px 10px 10px"}}>
-                    <button type="button" className="btn btn-danger" onClick={deletePerson}>Delete</button>
-                </div>
-                <div style={{margin:"20px 10px 10px"}}>
-                    <button type="submit" className="btn btn-success">Save</button>
+                    <button type="submit" className="btn btn-success">Add</button>
                 </div>
             </div>
-            
       </form>
     )
 }
 
-export default PersonDetails;
+export default PersonAdd;

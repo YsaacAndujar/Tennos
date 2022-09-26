@@ -14,7 +14,7 @@ function PersonList() {
     return(
         <>
             <div style={{margin:"20px 10px 10px"}}>
-                <Link to="/" className="btn btn-primary float-right">Add new person</Link>
+                <Link to="/add" className="btn btn-primary float-right">Add new person</Link>
             </div>
             <h2>Persons list</h2>
             <table className="table table-striped">
@@ -35,7 +35,9 @@ function PersonList() {
                         <td>{person["firstName"]||"--"}</td>
                         <td>{person["lastName"]||"--"}</td>
                         <td>{person["email"]||"--"}</td>
-                        <td>{person["birth"].substring(0, 10)||"--"}</td>
+                        <td>{
+                                person["birth"] != null ? person["birth"].substring(0, 10):"--"
+                            }</td>
                         <td><Link to={"/"+person['id']} className="btn btn-primary">Details</Link></td>
                     </tr>
                 })}
