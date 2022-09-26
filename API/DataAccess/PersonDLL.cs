@@ -16,14 +16,15 @@ namespace DataAccess
         }
         public (bool,Object) Add(Person person)
         {
-            var persons = context.Persons.Where(x=> x.Email.ToLower() == person.Email.ToLower());
+            var persons = context.Persons.Where(x => x.Id != person.Id).Where(x => x.Email.ToLower().Trim() == person.Email.ToLower().Trim());
             if (persons.Any())
             {
-                return (false, new {
-                        Email = new List<String> { "Email is alredy in use" }
-                    });
+                return (false, new
+                {
+                    Email = new List<String> { "Email is alredy in use" }
+                });
             }
-            person.Email = person.Email.ToLower();
+            person.Email = person.Email.ToLower().Trim();
             context.Persons.Add(person);
             context.SaveChanges();
             return (true, person);
@@ -38,7 +39,7 @@ namespace DataAccess
                     Id = new List<String> { "Id not found" }
                 });
             }
-            var persons = context.Persons.Where(x => x.Id != person.Id && x.Email.ToLower()!=personObj.Email.ToLower());
+            var persons = context.Persons.Where(x=>x.Id!=person.Id).Where(x=>x.Email.ToLower().Trim() == personObj.Email.ToLower().Trim());
             if (persons.Any())
             {
                 return (false, new
@@ -46,10 +47,21 @@ namespace DataAccess
                     Email = new List<String> { "Email is alredy in use" }
                 });
             }
+            /*foreach(var x in persons)
+            {
+                if (x.Id != person.Id)
+                {
+                    return (false, new
+                    {
+                        Email = new List<String> { "Email is alredy in use" }
+                    });
+                }
+            }*/
+
             person.FirstName = personObj.FirstName;
             person.LastName = personObj.LastName;
             person.Birth = personObj.Birth;
-            person.Email = personObj.Email;
+            person.Email = personObj.Email.ToLower().Trim();
             context.SaveChanges();
             return (true, person);
         }
